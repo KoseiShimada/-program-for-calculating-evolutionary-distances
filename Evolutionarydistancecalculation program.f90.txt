@@ -1,0 +1,75 @@
+      program ensh2
+      implicit none
+
+     character(len=40),dimension(15):: name
+     character(len=1),dimension(15,500):: seq
+     integer:: nseq, i, j , k, l
+     integer,dimension(15):: nlen
+     integer,dimension(15,15):: sbst=0
+     integer:: ict=0  
+    integer,dimension(15):: id
+     real,dimension(15,15)::dis,cdis
+     
+
+   read(*,'(i5)' ) nseq
+   do i=1,nseq
+    read(*,'(a40)') name(i)
+    read(*,'(i5)') nlen(i)
+    read(*,'(60a1)') (seq(i,j),j=1,nlen(i))
+   end do
+   
+   
+    do i=1,nlen(1)         
+       do j=1,nseq                      
+        if (seq(j,i) == '-')   then
+            id(j)=0 
+          else  
+            id(j)=1 
+         end if
+        end do
+     k=1
+        do j=1,nseq
+        k=k*id(j)
+        end do 
+        if(k/=0) then
+         ict=ict+1 
+         goto 100 
+         else 
+         goto 200
+         end if
+ 100     do j=1,nseq-1
+          do l=j+1,nseq
+             if (seq(j,i) /= seq(l,i)) sbst(j,l) = sbst(j,l)+1
+          end do
+         end do
+ 200 end do
+    ict=ict - 2
+
+    do i=1,nseq-1
+     do  j=i+1,nseq
+     dis(i,j) = real(sbst(i,j)) / real(ict)
+      ! write(*,"(f5.2)") dis(s,j)
+        cdis(i,j)= -log(1.0-dis(i,j))
+       
+        !write(*,"(f5.2)") -log(1.0-dis(s,j))
+     end do
+    end do
+
+ 
+     !     write(*,"('two compared name')")
+        !  write(*,"('1',30x,'2',30x)")
+       write(*,"('15')")
+  do i=1,nseq-1 
+     do j=i+1,nseq
+       write(*,'(a40)') name(i)
+       write(*,'(a40)') name(j)
+       write(*,"(i5)")sbst(i,j)
+       write(*,'(f6.4)')dis(i,J)
+       write(*,"(f6.4)") cdis(i,j)
+     end do
+   end do
+
+
+   
+ stop
+    end program ensh2
